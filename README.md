@@ -1,8 +1,17 @@
 # visops
-Visops: a wrapper to Mozilla SOPS like visudo.
+Visops: a wrapper to Mozilla SOPS like visudo. SOPS is used to encrypt YAML
+values.
 
-Visops permit edit a encrypted file, just decrypt before open text editor,
-and encrypt after close text editor.
+Visops permit edit a encrypted file. Basicly we need decrypt file before
+open text editor and encrypt after close text editor. A YAML file with
+all values encrypted or those ones encrypted with **encrypted_regex** will
+works, so detected regexp from existing file will br applied on encryption.
+
+## Limitations
+
+Visops use the first encrypted_regex that appear on YAML file to re-encrypt
+the file. Then visops doesn't work with multi YAMLs on a single file that
+use more then one regexp. Visops will alert you if that's the case.
 
 ## Requiments
 
