@@ -1,5 +1,5 @@
 #!/bin/bash
-# Writed by reinaldoc on 20220608
+# Writed by reinaldoc on 20220806
 
 TEMPFILE="${1}.visops.tmp"
 EDITOR=${EDITOR:-vi}
