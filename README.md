@@ -5,7 +5,7 @@ values.
 Visops permit edit a encrypted file. Basicly we need decrypt file before
 open text editor and encrypt after close text editor. A YAML file with
 all values encrypted or those ones encrypted with **encrypted_regex** will
-works, so detected regexp from existing file will br applied on encryption.
+works, so detected regexp from existing file will be applied on encryption.
 
 ## Limitations
 
