@@ -36,5 +36,5 @@ use more then one regexp. Visops will alert you if that's the case.
 
 ## Errors
 
-- Decrypt erros will be printed on console.
-- Encrypt erros will be saved on $file.visops.tmp.error.
+- Decrypt errors will be printed on console.
+- Encrypt errors will be saved on $file.visops.tmp.error.
