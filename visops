@@ -46,6 +46,7 @@ if [ "${?}" == 0 ] ; then
   # Succesful encrypt?
   if [ "${?}" == 0 ] ; then
     mv "${TEMPFILE}" "${1}"
+    test -f "${ERRORFILE}" && rm "${ERRORFILE}"
   else
     echo -e "\e[31mError encrypting edited file.\e[0m"
     echo -e "\e[33mError message available on '${ERRORFILE}'.\e[0m"
