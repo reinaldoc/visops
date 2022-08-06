@@ -1,10 +1,12 @@
 # visops
-Visops: a visudo like to Mozilla SOPS
+Visops: a wrapper to Mozilla SOPS like visudo.
 
 ## Requiments
 
-- Install SOPS: [https://github.com/mozilla/sops/releases](https://github.com/mozilla/sops/releases)
-- Generate or import GPG private key: gpg --import private.key
+- install SOPS: [https://github.com/mozilla/sops/releases](https://github.com/mozilla/sops/releases)
+- generate or import GPG private key: gpg --import private.key
+- export a existing public key fingerprint to re-encrypt file;
+  - fingerprint must be listed on: gpg --list-keys
 
 ## Usage
 
@@ -12,4 +14,7 @@ Visops: a visudo like to Mozilla SOPS
   visops file.yml
 ```
 
-## 
+## Errors
+
+- Decrypt erros will be printed on console.
+- Encrypt erros will be saved on $file.visops.tmp.error.
