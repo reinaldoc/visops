@@ -1,6 +1,10 @@
 #!/bin/bash
 # Writed by reinaldoc on 20220806
 
+# User configuration
+FILE_FORMAT=yaml
+
+# Internal vars
 TEMPFILE="${1}.visops.tmp"
 EDITOR=${EDITOR:-vi}
 
@@ -37,7 +41,7 @@ if [ "${?}" == 0 ] ; then
 
   ERRORFILE="${TEMPFILE}.error"
   # SOPS encrypt
-  sops --encrypt --in-place --encrypted-regex '${SOPS_REGEXP}' --pgp "${VISOPS_FINGERPRINT}" "${TEMPFILE}" > "${ERRORFILE}" 2>&1
+  sops --encrypt --in-place --input-type="${FILE_FORMAT}" --output-type="${FILE_FORMAT}" --encrypted-regex "${SOPS_REGEXP}" --pgp "${VISOPS_FINGERPRINT}" "${TEMPFILE}" > "${ERRORFILE}" 2>&1
 
   # Succesful encrypt?
   if [ "${?}" == 0 ] ; then
