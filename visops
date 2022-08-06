@@ -1,0 +1,56 @@
+#!/bin/bash
+# Writed by reinaldoc on 20220608
+
+TEMPFILE="${1}.visops.tmp"
+EDITOR=${EDITOR:-vi}
+
+# Require SOPS command
+sops >/dev/null 2>&1
+test "${?}" != 100 && { echo "SOPS not avialble on PATH. Exiting..." ; }
+
+# Require env VISOPS_FINGERPRINT
+test -z "${VISOPS_FINGERPRINT}" && { echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."; exit 1; }
+
+# Require md5sum command
+test "$(md5sum <<<123456 | cut -f1 -d ' ')" == "f447b20a7fcbf53a5d5be013ea0b15af" || { echo "md5sum not working properly."; exit 1; }
+
+# Validate args
+test -f "${1}" || { echo "This command require and accept only a file as argument. Exiting..."; exit 1; }
+
+# Validate SOPS file
+grep -qE '^sops:$' "${1}" || { echo "The file '${1}' does't have SOPS signature. Exiting..."; exit 1; }
+
+# Get encrypt regexp
+SOPS_REGEXP_LINE=$(grep encrypted_regex "${1}")
+test "${?}" == 0  || { echo "Can't find encrypted_regex on from SOPS file. Exiting..."; exit 1; }
+SOPS_REGEXP=$(head -n 1 <<<${SOPS_REGEXP_LINE} | sed -re 's/.*encrypted_regex: (.*)/\1/')
+
+# Check lock file
+test -f "${TEMPFILE}" && { echo "Temporary file '${TEMPFILE}' exists."; echo "Remove this lock file if no one is editing the file."; exit 1; }
+
+# SOPS decrypt
+sops --decrypt "${1}" > "${TEMPFILE}" 2>&1
+
+# Succesful decrypt?
+if [ "${?}" == 0 ] ; then
+  ${EDITOR} "${TEMPFILE}"
+
+  ERRORFILE="${TEMPFILE}.error"
+  # SOPS encrypt
+  sops --encrypt --in-place --encrypted-regex '${SOPS_REGEXP}' --pgp "${VISOPS_FINGERPRINT}" "${TEMPFILE}" > "${ERRORFILE}" 2>&1
+
+  # Succesful encrypt?
+  if [ "${?}" == 0 ] ; then
+    mv "${TEMPFILE}" "${1}"
+  else
+    echo -e "\e[31mError encrypting edited file.\e[0m"
+    echo -e "\e[33mError message available on '${ERRORFILE}'.\e[0m"
+    echo -e "\e[33mWarning: Unecrypted edited file is available on '${TEMPFILE}'. Save your work and remove it.\e[0m"
+  fi
+  exit
+
+# Failed decrypt
+else
+  echo -e "\e[31mError decrypting file '${1}'. Error message below.\e[0m"
+  test -f "${TEMPFILE}" && { echo ; cat "${TEMPFILE}"; rm "${TEMPFILE}"; }
+fi
