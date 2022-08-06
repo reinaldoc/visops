@@ -24,9 +24,12 @@ test -f "${1}" || { echo "This command require and accept only a file as argumen
 # Validate SOPS file
 grep -qE '^sops:$' "${1}" || { echo "The file '${1}' does't have SOPS signature. Exiting..."; exit 1; }
 
+# Validade encrypted_regex
+REGEXP_COUNT=$(grep encrypted_regex "${1}" | uniq -c | wc -l)
+test "${REGEXP_COUNT}" -gt 1 && { echo "Visops doesn't works with a file encrypted with more then one regexp. Sorry."; exit 1; }
+
 # Get encrypt regexp
 SOPS_REGEXP_LINE=$(grep encrypted_regex "${1}")
-test "${?}" == 0  || { echo "Can't find encrypted_regex on from SOPS file. Exiting..."; exit 1; }
 SOPS_REGEXP=$(head -n 1 <<<${SOPS_REGEXP_LINE} | sed -re 's/.*encrypted_regex: (.*)/\1/')
 
 # Check lock file
