@@ -2,7 +2,7 @@
 # Writed by reinaldoc on 20220806
 
 # User configuration
-FILE_FORMAT=yaml
+FILE_FORMAT=${VISOPS_FILE_FORMAT:-yaml}
 
 # Internal vars
 TEMPFILE="${1}.visops.tmp"
