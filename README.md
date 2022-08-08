@@ -21,12 +21,13 @@ will be applied on encryption.
 ## Optional environment variables
 
 Visops uses same fingerprint available on sops signature to identify public
-key to encrypt the file. If want encrypt with a new public key, you must set
-**$VISOPS_FINGERPRINT**.
+key to encrypt the file. If you want encrypt the file with a new public key,
+you must set **$VISOPS_FINGERPRINT**.
+
+The fingerprint must be listed on: **gpg --list-keys**.
 
 - Use other fingerprint
   - export VISOPS_FINGERPRINT=40CHARSSTRING
-  - fingerprint must be listed on: gpg --list-keys
 
 - Choose you text editor
   - export EDITOR=joe
