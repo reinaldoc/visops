@@ -29,8 +29,7 @@ REGEXP_COUNT=$(grep encrypted_regex "${1}" | uniq -c | wc -l)
 test "${REGEXP_COUNT}" -gt 1 && { echo "Visops doesn't works with a file encrypted with more then one regexp. Sorry."; exit 1; }
 
 # Get encrypt regexp
-SOPS_REGEXP_LINE=$(grep encrypted_regex "${1}")
-SOPS_REGEXP=$(head -n 1 <<<${SOPS_REGEXP_LINE} | sed -re 's/.*encrypted_regex: (.*)/\1/')
+SOPS_REGEXP=$(grep -E '^[ ]{4}encrypted_regex:' "${1}" | head -n 1 | sed -re 's/.*encrypted_regex: (.*)/\1/')
 
 # Check lock file
 test -f "${TEMPFILE}" && { echo "Temporary file '${TEMPFILE}' exists."; echo "Remove this lock file if no one is editing the file."; exit 1; }
