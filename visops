@@ -12,17 +12,27 @@ EDITOR=${EDITOR:-vi}
 sops >/dev/null 2>&1
 test "${?}" != 100 && { echo "SOPS not available on PATH. Exiting..." ; exit 1; }
 
-# Require env VISOPS_FINGERPRINT
-test -z "${VISOPS_FINGERPRINT}" && { echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."; exit 1; }
-
 # Validate args
 test -f "${1}" || { echo "This command require and accept only a file as argument. Exiting..."; exit 1; }
 
 # Validate SOPS file
 grep -qE '^sops:$' "${1}" || { echo "The file '${1}' does't have SOPS signature. Exiting..."; exit 1; }
 
+# Validade fingerprint
+FP_COUNT=$(grep -E '^[ ]{10}fp:' "${1}" | uniq -c | wc -l)
+test "${FP_COUNT}" -gt 1 && { echo "Visops doesn't works with a file encrypted with more then one public key. Sorry."; exit 1; }
+
+# Get fingerprint
+if [ -z "${VISOPS_FINGERPRINT}" ]; then
+  VISOPS_FINGERPRINT=$(grep -E '^[ ]{10}fp:' "${1}" | head -n 1 | sed -re 's/.*fp: (.*)/\1/')
+  if [ -z "${VISOPS_FINGERPRINT}" ]; then
+    echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."
+    exit 1
+  fi
+fi
+
 # Validade encrypted_regex
-REGEXP_COUNT=$(grep encrypted_regex "${1}" | uniq -c | wc -l)
+REGEXP_COUNT=$(grep -E '^[ ]{4}encrypted_regex:' "${1}" | uniq -c | wc -l)
 test "${REGEXP_COUNT}" -gt 1 && { echo "Visops doesn't works with a file encrypted with more then one regexp. Sorry."; exit 1; }
 
 # Get encrypt regexp
