@@ -28,6 +28,13 @@ if [ -z "${VISOPS_FINGERPRINT}" ]; then
   if [ -z "${VISOPS_FINGERPRINT}" ]; then
     echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."
     exit 1
+  else
+    gpg --list-keys | grep -q "${VISOPS_FINGERPRINT}"
+    if [ "${?}" != 0 ] ; then
+      echo "Fingerprint detected from file '${VISOPS_FINGERPRINT}' not found on gpg keys."
+      echo "Import correct public key or export \$VISOPS_FINGERPRINT."
+      exit 1
+    fi
   fi
 fi
 
