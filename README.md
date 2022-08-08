@@ -10,26 +10,25 @@ A YAML file with all values encrypted or those ones encrypted with
 **encrypted_regex** will work, so detected regexp from the existing file
 will be applied on encryption.
 
-## Limitations
-
-Visops uses the first encrypted_regex that appears on YAML file to
-re-encrypt the file. Then visops doesn't work with multi YAMLs on a single
-file that uses more than one regexp. Visops will alert you if that's the
-case.
-
 ## Requiments
 
-- install SOPS
+- Install SOPS
   - [https://github.com/mozilla/sops/releases](https://github.com/mozilla/sops/releases)
 
-- generate or import GPG private key
+- Generate or import GPG private key
   - gpg --import private.key
 
-- export a existing public key fingerprint to re-encrypt file
-  - fingerprint must be listed on: gpg --list-keys
-  - export VISOPS_FINGERPRINT=40CHARSSTRING
+## Optional environment variables
 
-- choose you text editor
+Visops uses same fingerprint available on sops signature to identify public
+key to encrypt the file. If want encrypt with a new public key, you must set
+**$VISOPS_FINGERPRINT**.
+
+- Use other fingerprint
+  - export VISOPS_FINGERPRINT=40CHARSSTRING
+  - fingerprint must be listed on: gpg --list-keys
+
+- Choose you text editor
   - export EDITOR=joe
 
 ## Usage
@@ -42,3 +41,11 @@ case.
 
 - Decrypt errors will be printed on console.
 - Encrypt errors will be saved on $file.visops.tmp.error.
+
+## Limitations
+
+Visops uses the first encrypted_regex that appears on YAML file to
+re-encrypt the file. Then visops doesn't work with multi YAMLs on a single
+file that uses more than one regexp. Visops will alert you if that's the
+case.
+
