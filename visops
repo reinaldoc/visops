@@ -10,7 +10,7 @@ EDITOR=${EDITOR:-vi}
 
 # Require SOPS command
 sops >/dev/null 2>&1
-test "${?}" != 100 && { echo "SOPS not available on PATH. Exiting..." ; }
+test "${?}" != 100 && { echo "SOPS not available on PATH. Exiting..." ; exit 1; }
 
 # Require env VISOPS_FINGERPRINT
 test -z "${VISOPS_FINGERPRINT}" && { echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."; exit 1; }
