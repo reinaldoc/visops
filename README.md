@@ -45,8 +45,12 @@ The fingerprint must be listed on: **gpg --list-keys**.
 
 ## Limitations
 
-Visops uses the first encrypted_regex that appears on YAML file to
-re-encrypt the file. Then visops doesn't work with multi YAMLs on a single
+Visops uses the first encrypted_regex that appears on YAML file to select
+fields to encryption. Then visops doesn't work with multi YAMLs on a single
 file that uses more than one regexp. Visops will alert you if that's the
 case.
 
+Visops uses the first fingerprint that appears on YAML file to identify the
+public key to encrypt the file. Then visops doesn't work with multi YAMLs on
+a single file that was encrypted with more then one fingerprint. Visops will
+alert you if that's the case.
