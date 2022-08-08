@@ -15,9 +15,6 @@ test "${?}" != 100 && { echo "SOPS not available on PATH. Exiting..." ; exit 1; 
 # Require env VISOPS_FINGERPRINT
 test -z "${VISOPS_FINGERPRINT}" && { echo "Please, export \$VISOPS_FINGERPRINT with public key fingerprint. Exiting..."; exit 1; }
 
-# Require md5sum command
-test "$(md5sum <<<123456 | cut -f1 -d ' ')" == "f447b20a7fcbf53a5d5be013ea0b15af" || { echo "md5sum not working properly."; exit 1; }
-
 # Validate args
 test -f "${1}" || { echo "This command require and accept only a file as argument. Exiting..."; exit 1; }
 
