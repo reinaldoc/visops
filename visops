@@ -12,6 +12,9 @@ EDITOR=${EDITOR:-vi}
 sops >/dev/null 2>&1
 test "${?}" != 100 && { echo "SOPS not available on PATH. Exiting..." ; exit 1; }
 
+# Require md5sum command
+test "$(md5sum <<<123456 | cut -f1 -d ' ')" == "f447b20a7fcbf53a5d5be013ea0b15af" || { echo "md5sum not working properly."; exit 1; }
+
 # Args validation
 test -f "${1}" || { echo "This command require and accept only a file as argument. Exiting..."; exit 1; }
 
@@ -53,7 +56,9 @@ sops --decrypt "${1}" > "${TEMPFILE}" 2>&1
 
 # Succesful decrypt?
 if [ "${?}" == 0 ] ; then
+  HASH_TEMPFILE=$(md5sum < ${TEMPFILE} | cut -f1 -d ' ')
   ${EDITOR} "${TEMPFILE}"
+  test "$(md5sum < ${TEMPFILE} | cut -f1 -d ' ')" == "${HASH_TEMPFILE}" && { rm ${TEMPFILE} ; exit 0 ; }
 
   ERRORFILE="${TEMPFILE}.error"
   # SOPS encrypt
